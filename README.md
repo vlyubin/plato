@@ -3,7 +3,7 @@ Debate the best public speakers in the world on any topic you'd like!
 
 ## Prerequisites
 
-You will need an Openai API key (we're using gpt3.5) and Elevenlabs API key. If you're new to openai, you'll get ~$7 worth of free usage initially, and any further gpt3.5 usage is pretyy cheap. For Elevenlabs, you can get initial monthly membership for $1.
+You will need an Openai API key (we're using gpt3.5) and Elevenlabs API key. If you're new to openai, you'll get ~$7 worth of free usage initially, and any further gpt3.5 usage is pretty cheap. For Elevenlabs, you can get initial monthly membership for $1.
 
 Create `credentials.txt` file in `server` directory that contains the following:
 
