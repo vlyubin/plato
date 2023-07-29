@@ -1,1 +1,14 @@
-# TODO - load credentials for openai and elevenlabs
+import os
+import openai
+from dotenv import load_dotenv
+from elevenlabs import set_api_key
+
+load_dotenv()
+
+# Fetch API keys from .env file
+OPENAI_KEY = os.getenv('OPENAI_KEY')
+ELEVENLABS_KEY = os.getenv('ELEVENLABS_KEY')
+
+# Set API keys
+set_api_key(ELEVENLABS_KEY)
+openai.api_key = OPENAI_KEY

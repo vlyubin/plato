@@ -14,8 +14,8 @@ def query_with_prompts(system_prompt, user_prompt):
 def write_speech(person_info: str, topic: str, supporting: bool = True):
     speech_type_keyword = "supporting" if supporting else "rebuttal"
     rebuttal_prompt = " Reminder - you are giving a rebuttal speech, so you want to refute the topic." if not supporting else ""
-    system_prompt = f"""You are {person_info}. You are particinpating in a debate competition and are writing a {speech_type_keyword} speech for the following statment: "{topic}". Come up with short speech (120 words or less)."""
-    user_prompt = f"""You are {person_info}. You are particinpating in a debate competition and are writing a {speech_type_keyword} speech for the following statment: "{topic}". Come up with short speech (120 words or less).{rebuttal_prompt}
+    system_prompt = f"""You are {person_info}. You are particinpating in a debate competition and are writing a {speech_type_keyword} speech for the following statment: "{topic}". Come up with a very short speech (40 words or less)."""
+    user_prompt = f"""You are {person_info}. You are particinpating in a debate competition and are writing a {speech_type_keyword} speech for the following statment: "{topic}". Come up with a very short speech (40 words or less).{rebuttal_prompt}
 Speech:"""
     return query_with_prompts(system_prompt, user_prompt)
 

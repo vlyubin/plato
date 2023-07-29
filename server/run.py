@@ -1,7 +1,11 @@
-from flask import Flask, send_from_directory, request
 import random
 import os
-from functions import transcribe
+import tempfile
+
+from flask import Flask, send_from_directory, request
+
+from functions import transcribe, generate_audio
+from openai import write_speech
 
 app = Flask(__name__)
 
@@ -17,18 +21,26 @@ def home(path):
 
 @app.route("/get_speech")
 def get_speech():
-    # TODO: This should return text and URL to audio file for given speech
-    return str(random.randint(0, 100))
+    topic = request.form.get('topic')
+    # Get speech text from openai
+    speech_text = write_speech("Donald Trump, former president", topic)
+    # Generate audio for the speech and put it into static directory, return filename to that audio
+    return generate_audio("Donald Trump", speech_text)
 
 @app.route("/transcribe_speech", methods=['POST'])
 def transcribe_speech():
-    f = request.files['audio_data']
-    # TODO - use a temp file here instead
-    with open('audio.wav', 'wb') as audio:
-        f.save(audio)
-    print('file uploaded successfully')
-    rv = transcribe('audio.wav')
-    return str(rv)
+    """
+    This takes in audio file, then uses whisper to transcribe it, and returns the transcription.
+    Inspired by https://stackoverflow.com/questions/60032983/record-voice-with-recorder-js-and-upload-it-to-python-flask-server-but-wav-file
+    """
+    audio_data = request.files['audio_data']
+    tmp_file = tempfile.NamedTemporaryFile()
+    with open(tmp_file, 'wb') as audio:
+        audio_data.save(audio)
+    print('File for transcription uploaded successfully')
+    transcription = transcribe(tmp_file)
+    print('Transcription completed successfully')
+    return str(transcription)
 
 if __name__ == "__main__":
     app.run(debug=True)
