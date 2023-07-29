@@ -20,16 +20,23 @@ def base():
 def home(path):
     return send_from_directory('client/public', path)
 
-@app.route("/get_speech", methods=['POST'])
-def get_speech():
+@app.route("/generate_speech", methods=['POST'])
+def generate_speech():
+    """
+    Generates speech for a given topic and speaker
+    """
+    # Get input data
     data = request.get_json()
+
     topic = data["topic"]
-    speech_id = data["speech_id"]
+    speaker = data["speaker"]
+    debate_id = data["debate_id"]
+
     # Get speech text from openai
-    speech_text = write_speech("Donald Trump, former president", topic)
+    speech_text = write_speech(speaker, topic)
     print("Wrote speech: " + speech_text)
     # Generate audio for the speech and put it into static directory, return filename to that audio
-    speech_file = generate_audio("Donald Trump", speech_text, speech_id)
+    speech_file = generate_audio(speaker, speech_text, debate_id)
     print("Generated sound speech: " + speech_file)
     return "OK"
 
@@ -40,13 +47,52 @@ def transcribe_speech():
     Inspired by https://stackoverflow.com/questions/60032983/record-voice-with-recorder-js-and-upload-it-to-python-flask-server-but-wav-file
     """
     audio_data = request.files['audio_data']
-    tmp_file = tempfile.NamedTemporaryFile()
-    with open(tmp_file, 'wb') as audio:
+    debate_id = request.form['debate_id']
+
+    location = f'static/speeches/user_speech_{debate_id}.wav'
+    with open(location, 'wb') as audio:
         audio_data.save(audio)
     print('File for transcription uploaded successfully')
-    transcription = transcribe(tmp_file)
+    transcription = transcribe(location)
     print('Transcription completed successfully')
-    return str(transcription)
+    return {
+        "transcription": str(transcription),
+        "audio": location
+    }
+
+@app.route("/get_all_speeches", methods=['GET'])
+def get_all_speeches():
+    rv = [
+        {
+            "debate_id": "123",
+            "speaker1": "(User) Igor",
+            "speaker2": "(AI) Donald Trump",
+            "speech1": "Hello, my name is Igor",
+            "speech2": "Igor just doesn't get it. Donald Trump is the best president ever.",
+            "audio_files": ["static/speeches/user_speech_123.wav", "static/speeches/ai_speech_123.wav"],
+            "score1": 3,
+            "score2": 9,
+            "winner": "(AI) Donald Trump"
+        }
+    ]
+    return rv
+
+
+@app.route("/get_speech_by_id/<debate_id>", methods=['GET'])
+def get_speech_by_id(debate_id):
+    rv = {
+            "debate_id": "123",
+            "speaker1": "(User) Igor",
+            "speaker2": "(AI) Donald Trump",
+            "speech1": "Hello, my name is Igor",
+            "speech2": "Igor just doesn't get it. Donald Trump is the best president ever.",
+            "audio_files": ["static/speeches/user_speech_123.wav", "static/speeches/ai_speech_123.wav"],
+            "score1": 3,
+            "score2": 9,
+            "winner": "(AI) Donald Trump"
+        }
+    return rv
+
 
 if __name__ == "__main__":
     app.run(debug=True)

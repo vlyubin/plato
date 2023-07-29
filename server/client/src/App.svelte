@@ -51,19 +51,20 @@ function uuidv4() {
 
 async function getSpeech() {
     console.log("getSpeech");
-    let speech_id = uuidv4();
-    let response = await fetch('/get_speech', {
+    let debate_id = uuidv4();
+    let response = await fetch('/generate_speech', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         topic: topic,
-        speech_id: speech_id
+        debate_id: debate_id,
+        speaker: 'Donald Trump'
       }),
     });
     console.log("Finished generating, playing audio!");
-    var audio = new Audio('/static/' + speech_id + '.wav');
+    var audio = new Audio('/static/' + debate_id + '.wav');
 	audio.play();
 }
 

@@ -35,5 +35,5 @@ def generate_audio(speaker: str, speech: str, speech_id: Optional[str]) -> str:
     )
     if not speech_id:
         speech_id = hashlib.sha256(speech.encode()).hexdigest()
-    save(audio, f'static/{speech_id}.wav')
-    return f'static/{speech_id}.wav'
+    save(audio, f'static/speeches/{speech_id}.wav')
+    return f'static/speeches/{speech_id}.wav'
