@@ -4,8 +4,9 @@ import tempfile
 
 from flask import Flask, send_from_directory, request
 
+from credentials import OPENAI_KEY, ELEVENLABS_KEY
 from functions import transcribe, generate_audio
-from openai import write_speech
+from openai_api import write_speech
 
 app = Flask(__name__)
 
@@ -19,13 +20,18 @@ def base():
 def home(path):
     return send_from_directory('client/public', path)
 
-@app.route("/get_speech")
+@app.route("/get_speech", methods=['POST'])
 def get_speech():
-    topic = request.form.get('topic')
+    data = request.get_json()
+    topic = data["topic"]
+    speech_id = data["speech_id"]
     # Get speech text from openai
     speech_text = write_speech("Donald Trump, former president", topic)
+    print("Wrote speech: " + speech_text)
     # Generate audio for the speech and put it into static directory, return filename to that audio
-    return generate_audio("Donald Trump", speech_text)
+    speech_file = generate_audio("Donald Trump", speech_text, speech_id)
+    print("Generated sound speech: " + speech_file)
+    return "OK"
 
 @app.route("/transcribe_speech", methods=['POST'])
 def transcribe_speech():

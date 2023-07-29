@@ -15,6 +15,14 @@
 <p id="transcription"></p>
 <ol id="recordingsList"></ol>
 
+<form on:submit|preventDefault={getSpeech} >
+    <div>
+        Topic:
+        <input bind:value={topic} type="text" id="topic"/>
+    </div>
+    <button type="submit">Give speech!</button>
+</form>
+
 <script>
 //webkitURL is deprecated but nevertheless
 URL = window.URL || window.webkitURL;
@@ -30,6 +38,32 @@ var audioContext //audio context to help us record
 // Play sample audio
 function playAudio() {
 	var audio = new Audio('/static/DonaldVodka.mp3');
+	audio.play();
+}
+
+let topic = "";
+
+function uuidv4() {
+  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  );
+}
+
+async function getSpeech() {
+    console.log("getSpeech");
+    let speech_id = uuidv4();
+    let response = await fetch('/get_speech', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        topic: topic,
+        speech_id: speech_id
+      }),
+    });
+    console.log("Finished generating, playing audio!");
+    var audio = new Audio('/static/' + speech_id + '.wav');
 	audio.play();
 }
 

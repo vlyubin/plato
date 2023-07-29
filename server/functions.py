@@ -20,17 +20,20 @@ def transcribe(filename: str) -> Optional[str]:
 
 
 def get_voice_id_for_name(name: str) -> Optional[str]:
-    voices = voices()
-    for voice in voices:
+    voices_response = voices()
+    for voice in voices_response:
         if voice.name == name:
             return voice.voice_id
     return None
 
-def generate_audio(speaker: str, speech: str) -> str:
+def generate_audio(speaker: str, speech: str, speech_id: Optional[str]) -> str:
+    voice_id = get_voice_id_for_name(speaker)
+    print(f"Generating audio for {speaker} with voice id {voice_id}")
     audio = generate(
         text=speech,
-        voice=get_voice_id_for_name(speaker) or "Alex"
+        voice=voice_id or "Alex"
     )
-    speech_hash = hashlib.sha256(speech.encode()).hexdigest()
-    save(audio, f'static/{speech_hash}.wav')
-    return f'static/{speech_hash}.wav'
+    if not speech_id:
+        speech_id = hashlib.sha256(speech.encode()).hexdigest()
+    save(audio, f'static/{speech_id}.wav')
+    return f'static/{speech_id}.wav'
