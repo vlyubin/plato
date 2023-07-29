@@ -14,9 +14,15 @@ ELEVENLABS_KEY=...
 
 Then you'll be able to run everything.
 
-## Running software
+## Install dependencies
 
-1) [Optinal] Create 
+1. [Optional] Create venv environment using `python3 -m venv .venv`, then activate it `. .venv/bin/activate`
+2. Install python dependencies `pip3 install -r requirements.txt`
+3. Go to `server/client` and run `npm install`.
+
+## Run software
+
+To run this project, you'll need to run `python3 run.py` in the `server` directory AND `npm run dev` in the `server/client` directory (at the same time).
 
 ## Demo video
 
