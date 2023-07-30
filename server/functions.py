@@ -92,11 +92,11 @@ def generate_judgement_audio(debate_id, score1, score2, speaker1, speaker2, judg
 
 def generate_united_audio(debate_id):
     infiles = [
-        f'static/speeches/{debate_id}_intro.wav'
-        f'static/speeches/{debate_id}_speech1.wav'
-        f'static/speeches/{debate_id}_after1.wav'
-        f'static/speeches/{debate_id}_speech2.wav'
-        f'static/speeches/{debate_id}_after2.wav'
+        f'static/speeches/{debate_id}_intro.wav',
+        f'static/speeches/{debate_id}_speech1.wav',
+        f'static/speeches/{debate_id}_after1.wav',
+        f'static/speeches/{debate_id}_speech2.wav',
+        f'static/speeches/{debate_id}_after2.wav',
         f'static/speeches/{debate_id}_judgement.wav'
     ]
     outfile = f'static/speeches/{debate_id}_combined.wav'

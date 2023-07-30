@@ -148,7 +148,7 @@ def judge_speech(debate_id):
 
     update_debate(debate_id, score1=score1, score2=score2, judgement=judge_speech)
 
-    generate_judgement_audio(debate_id, score1, score2, debate_instance["speaker1"], debate_instance["speaker2"], judge_speech)
+    #generate_judgement_audio(debate_id, score1, score2, debate_instance["speaker1"], debate_instance["speaker2"], judge_speech)
 
     generate_united_audio(debate_id)
 

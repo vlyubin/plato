@@ -29,27 +29,27 @@ def judge_speeches(topic: str, supporting_speech: str, rebuttal_speech: str):
     Uses openai to judge two speeches
     """
     system_prompt = ""
-    user_prompt = f"""You are a judge in a debate competition. Given a topic, supporting and rebuttal speeches, grade each speech on a range from 1 to 10 and give a brief summary for why you chose that score.
+    user_prompt = f"""You are a judge in a debate competition. Given a topic, supporting and rebuttal speeches, grade each speech on a range from 1 to 10.
 Topic: {topic}
 
 Supporting speech: {supporting_speech}
 
 Rebuttal speech: {rebuttal_speech}
 
-Supporting speech score, rebuttal speech score (comma-separated):
-"""
+Grade each speech on a range from 1 to 10, for example "8,5" or "4,10".
+
+Supporting speech score, rebuttal speech score (comma-separated):"""
     scores = query_with_prompts(system_prompt, user_prompt)
     print("Judges scores: " + scores)
 
-    user_prompt = f"""You are a judge in a debate competition. Given a topic, supporting and rebuttal speeches, grade each speech on a range from 1 to 10 and give a brief summary for why you chose that score.
+    user_prompt = f"""You are a judge in a debate competition. Given a topic, supporting and rebuttal speeches, give a brief critique of both speeches.
 Topic: {topic}
 
 Supporting speech: {supporting_speech}
 
 Rebuttal speech: {rebuttal_speech}
 
-Give a short critique of both speeches (100 words or less):
-"""
+Give a short critique of both speeches (100 words or less):"""
     speech = query_with_prompts(system_prompt, user_prompt)
     print("Judged speech: " + speech)
     return scores, speech
