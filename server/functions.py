@@ -39,7 +39,7 @@ def generate_audio(speaker: str, speech: str, debate_id: str, first_speech: bool
 
 def generate_fixed_audios(debate_id, topic, speaker1, speaker2):
     also_keyword = "also" if speaker1 == speaker2 else ""
-    intro_text = f"Welcome to Debate LOL - a place where you can debate the best speakers in the world on any topic of your choosing. Today's topic is {topic}. The supporing speech is given by {speaker1}. The rebuttal speech is {also_keyword} given by {speaker2}. {speaker1} has the floor and their minute starts now."
+    intro_text = f"Welcome to Debate LOL - a place where you can debate the best speakers in the world on any topic of your choosing. Today's topic is \"{topic}\". The supporing speech is given by {speaker1}. The rebuttal speech is {also_keyword} given by {speaker2}. {speaker1} has the floor and their minute starts now."
     after1_text = f"Thank you {speaker1.split()[0]}. {speaker2.split()[0]} has the floor and their minute starts now."
     after2_text = f"Thank you {speaker2.split()[0]}. The judges will now review both speeches and present their verdict."
 
