@@ -102,6 +102,8 @@ def generate_judgement_audio(debate_id, score1, score2, speaker1, speaker2, judg
     save(audio, f'static/speeches/{debate_id}_judgement.wav')
     normalize_audio(f'static/speeches/{debate_id}_judgement.wav')
 
+    return text
+
 
 def generate_united_audio(debate_id):
     os.system(f"""sox -t wav static/speeches/{debate_id}_intro.wav static/speeches/{debate_id}_speech1.wav static/speeches/{debate_id}_after1.wav static/speeches/{debate_id}_speech2.wav static/speeches/{debate_id}_after2.wav static/speeches/{debate_id}_judgement.wav static/speeches/{debate_id}.wav""")
