@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from elevenlabs import set_api_key
 
 load_dotenv()
+load_dotenv("/var/www/py/plato/server")
 
 # Fetch API keys from .env file
 OPENAI_KEY = os.getenv('OPENAI_KEY')
