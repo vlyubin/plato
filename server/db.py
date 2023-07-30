@@ -110,10 +110,10 @@ def get_all_debates():
 def get_debate_by_id(debate_id):
     conn = sqlite3.connect("plato.db")
     sql = f"""
-    SELECT * FROM debates WHERE debate_id = ?;
+    SELECT * FROM debates WHERE debate_id = "{debate_id}";
     """
     c = conn.cursor()
-    rows = list(c.execute(sql, (debate_id,)))
+    rows = list(c.execute(sql))
     conn.close()
     return [
         {

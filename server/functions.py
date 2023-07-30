@@ -1,6 +1,7 @@
 from typing import Optional
 
 import whisper
+import random
 
 from elevenlabs import generate, save, voices
 
@@ -38,27 +39,33 @@ def generate_audio(speaker: str, speech: str, debate_id: str, first_speech: bool
     return f'static/speeches/{debate_id}{suffix}.wav'
 
 
+def get_random_caster_voice() -> str:
+    return random.choice(["Adam", "Arnold", "Bella", "Wayne", "Marcus", "Caster", "Emily", "Josh", "Sam", "Serena"])
+
+
 def generate_fixed_audios(debate_id, topic, speaker1, speaker2):
     also_keyword = "also" if speaker1 == speaker2 else ""
     intro_text = f"Welcome to Debate LOL - a place where you can debate the best speakers in the world on any topic of your choosing. Today's topic is \"{topic}\". The supporing speech is given by {speaker1}. The rebuttal speech is {also_keyword} given by {speaker2}. {speaker1} has the floor and their minute starts now."
     after1_text = f"Thank you {speaker1.split()[0]}. {speaker2.split()[0]} has the floor and their minute starts now."
     after2_text = f"Thank you {speaker2.split()[0]}. The judges will now review both speeches and present their verdict."
 
+    voice_name = get_random_caster_voice()
+
     intro_audio = generate(
         text=intro_text,
-        voice="Adam"
+        voice=voice_name
     )
     save(intro_audio, f'static/speeches/{debate_id}_intro.wav')
 
     after1_audio = generate(
         text=after1_text,
-        voice="Adam"
+        voice=voice_name
     )
     save(after1_audio, f'static/speeches/{debate_id}_after1.wav')
 
     after2_audio = generate(
         text=after2_text,
-        voice="Adam"
+        voice=voice_name
     )
     save(after2_audio, f'static/speeches/{debate_id}_after2.wav')
 
@@ -73,8 +80,10 @@ def generate_judgement_audio(debate_id, score1, score2, speaker1, speaker2, judg
         result = f"{speaker2} wins the debate."
     text = f"Upon reviewing the speeches, we give the supporting speech a score of {score1} and the rebuttal speech a score of {score2}. {judgement}. {result}"
 
-    intro_audio = generate(
+    voice_name = get_random_caster_voice()
+
+    audio = generate(
         text=text,
-        voice="Adam"
+        voice=voice_name
     )
-    save(intro_audio, f'static/speeches/{debate_id}_judgement.wav')
+    save(audio, f'static/speeches/{debate_id}_judgement.wav')

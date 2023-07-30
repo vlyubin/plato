@@ -133,7 +133,8 @@ def judge_speech(debate_id):
         raise Exception(f"Missing debate instance {debate_id}.")
     debate_instance = debate_instances[0]
 
-    judge_verdict = judge_speeches(debate_id, debate_instance["speech1"], debate_instance["speech2"])
+    judge_verdict = judge_speeches(debate_instance["topic"], debate_instance["speech1"], debate_instance["speech2"])
+    print("Judge verdict: " + judge_verdict)
     parts = judge_verdict.split(",")
 
     # If we fail to parse, assign random scores (should not happen)
