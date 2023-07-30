@@ -2,8 +2,7 @@ import openai
 
 
 def query_openai(messages):
-    # TODO: FOR TESTING PURPOSES CROP
-	chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages, max_tokens=30)
+	chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages)
 	return chat_completion.choices[0].message.content
 
 

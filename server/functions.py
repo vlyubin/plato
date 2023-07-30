@@ -20,7 +20,7 @@ def transcribe(filename: str) -> Optional[str]:
     try:
         normalize_audio(filename)
         result = model.transcribe(filename)
-        rv = result["text"]
+        rv = result["text"][:3000]
         print("Transcribed the following text: " + rv)
         return rv
     except Exception as e:
@@ -44,7 +44,7 @@ def generate_audio(speaker: str, speech: str, debate_id: str, first_speech: bool
     print(f"Generating audio for {speaker} with voice id {voice_id}")
     # TODO: FOR TESTING PURPOSES CROP
     audio = generate(
-        text=speech[:100],
+        text=speech[:120],
         voice=voice_id or get_random_caster_voice()
     )
     suffix = "_speech1" if first_speech else "_speech2"
@@ -104,5 +104,5 @@ def generate_judgement_audio(debate_id, score1, score2, speaker1, speaker2, judg
 
 
 def generate_united_audio(debate_id):
-    os.system(f"""sox -t wav static/speeches/{debate_id}_intro.wav static/speeches/{debate_id}_speech1.wav static/speeches/{debate_id}_after1.wav static/speeches/{debate_id}_speech2.wav static/speeches/{debate_id}_after2.wav static/speeches/{debate_id}_judgement.wav static/speeches/{debate_id}_combined.wav""")
-    return f'static/speeches/{debate_id}_combined.wav'
+    os.system(f"""sox -t wav static/speeches/{debate_id}_intro.wav static/speeches/{debate_id}_speech1.wav static/speeches/{debate_id}_after1.wav static/speeches/{debate_id}_speech2.wav static/speeches/{debate_id}_after2.wav static/speeches/{debate_id}_judgement.wav static/speeches/{debate_id}.wav""")
+    return f'static/speeches/{debate_id}.wav'
