@@ -114,7 +114,22 @@ def transcribe_speech():
     else:
         update_debate(debate_id, speech2=transcription)
 
-    return "OK"
+    return  {
+        "transcription": str(transcription),
+        "audio": location
+    }
+
+
+@app.route("/get_transcription/<debate_id>", methods=['GET'])
+def get_transcription(debate_id):
+    debate_instances = get_debate_by_id(debate_id)
+    if len(debate_instances) == 0:
+        raise Exception(f"Missing debate instance {debate_id}.")
+    debate_instance = debate_instances[0]
+
+    if debate_instance["speech2"] is not None:
+        return debate_instance["speech2"]
+    return debate_instance["speech1"]
 
 
 @app.route("/judge_speech/<debate_id>", methods=['GET'])
