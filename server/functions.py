@@ -11,8 +11,9 @@ from elevenlabs import generate, save, voices
 model = whisper.load_model("base.en") # tiny.en / small.en
 
 def normalize_audio(filename: str) -> str:
-    os.system(f"ffmpeg -i {filename} -filter:a loudnorm normalized_{filename}")
-    os.system(f"mv normalized_{filename} {filename}")
+    new_filename = filename.split(".wav")[0] + "_normalized.wav"
+    os.system(f"ffmpeg -i {filename} -filter:a loudnorm {new_filename}")
+    os.system(f"mv {new_filename} {filename}")
 
 
 def transcribe(filename: str) -> Optional[str]:
@@ -103,5 +104,5 @@ def generate_judgement_audio(debate_id, score1, score2, speaker1, speaker2, judg
 
 
 def generate_united_audio(debate_id):
-    os.system(f"""sox static/speeches/{debate_id}_intro.wav static/speeches/{debate_id}_speech1.wav static/speeches/{debate_id}_after1.wav static/speeches/{debate_id}_speech2.wav static/speeches/{debate_id}_after2.wav static/speeches/{debate_id}_judgement.wav static/speeches/{debate_id}_combined.wav""")
+    os.system(f"""sox -t wav static/speeches/{debate_id}_intro.wav static/speeches/{debate_id}_speech1.wav static/speeches/{debate_id}_after1.wav static/speeches/{debate_id}_speech2.wav static/speeches/{debate_id}_after2.wav static/speeches/{debate_id}_judgement.wav static/speeches/{debate_id}_combined.wav""")
     return f'static/speeches/{debate_id}_combined.wav'
