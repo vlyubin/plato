@@ -2,8 +2,8 @@ import openai
 
 
 def query_openai(messages):
-    # FOR TESTING PURPOSES THERE's a limit of 100 chars
-	chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages, max_tokens=100)
+    # TODO: FOR TESTING PURPOSES CROP
+	chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages, max_tokens=30)
 	return chat_completion.choices[0].message.content
 
 

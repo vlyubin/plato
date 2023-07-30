@@ -28,8 +28,9 @@ def get_voice_id_for_name(name: str) -> Optional[str]:
 def generate_audio(speaker: str, speech: str, debate_id: str, first_speech: bool) -> str:
     voice_id = get_voice_id_for_name(speaker)
     print(f"Generating audio for {speaker} with voice id {voice_id}")
+    # TODO: FOR TESTING PURPOSES CROP
     audio = generate(
-        text=speech,
+        text=speech[:100],
         voice=voice_id or "Adam"
     )
     suffix = "_speech1" if first_speech else "_speech2"
