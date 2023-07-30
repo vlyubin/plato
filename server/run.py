@@ -7,7 +7,7 @@ from flask import Flask, send_from_directory, request
 
 from constants import SPEAKERS
 from credentials import OPENAI_KEY, ELEVENLABS_KEY
-from functions import transcribe, generate_audio, generate_fixed_audios, generate_judgement_audio
+from functions import transcribe, generate_audio, generate_fixed_audios, generate_judgement_audio, generate_united_audio
 from openai_api import write_speech, judge_speeches
 from db import get_all_debates, create_debate, update_debate, get_debate_by_id
 
@@ -133,9 +133,8 @@ def judge_speech(debate_id):
         raise Exception(f"Missing debate instance {debate_id}.")
     debate_instance = debate_instances[0]
 
-    judge_verdict = judge_speeches(debate_instance["topic"], debate_instance["speech1"], debate_instance["speech2"])
-    print("Judge verdict: " + judge_verdict)
-    parts = judge_verdict.split(",")
+    judge_scores, judge_speech = judge_speeches(debate_instance["topic"], debate_instance["speech1"], debate_instance["speech2"])
+    parts = judge_scores.split(",")
 
     # If we fail to parse, assign random scores (should not happen)
     try:
@@ -147,15 +146,16 @@ def judge_speech(debate_id):
     except:
         score2 = random.randint(4, 9)
 
-    judge_explanation = ",".join(parts[2:])
-    update_debate(debate_id, score1=score1, score2=score2, judgement=judge_explanation)
+    update_debate(debate_id, score1=score1, score2=score2, judgement=judge_speech)
 
-    generate_judgement_audio(debate_id, score1, score2, debate_instance["speaker1"], debate_instance["speaker2"], judge_explanation)
+    generate_judgement_audio(debate_id, score1, score2, debate_instance["speaker1"], debate_instance["speaker2"], judge_speech)
+
+    generate_united_audio(debate_id)
 
     return {
         "score1": score1,
         "score2": score2,
-        "judgement": judge_explanation
+        "judgement": judge_speech
     }
 
 @app.route("/get_speakers", methods=['GET'])

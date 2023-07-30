@@ -2,6 +2,7 @@ from typing import Optional
 
 import whisper
 import random
+import wave
 
 from elevenlabs import generate, save, voices
 
@@ -45,8 +46,8 @@ def get_random_caster_voice() -> str:
 
 def generate_fixed_audios(debate_id, topic, speaker1, speaker2):
     also_keyword = "also" if speaker1 == speaker2 else ""
-    intro_text = f"Welcome to Debate LOL - a place where you can debate the best speakers in the world on any topic of your choosing. Today's topic is \"{topic}\". The supporing speech is given by {speaker1}. The rebuttal speech is {also_keyword} given by {speaker2}. {speaker1} has the floor and their minute starts now."
-    after1_text = f"Thank you {speaker1.split()[0]}. {speaker2.split()[0]} has the floor and their minute starts now."
+    intro_text = f"Welcome to Debate LOL - a place where you can debate the best speakers in the world on any topic of your choosing. Today's topic is \"{topic}\". The supporing speech is given by {speaker1}. The rebuttal speech is {also_keyword} given by {speaker2}. {speaker1} will now take the floor."
+    after1_text = f"Thank you {speaker1.split()[0]}. {speaker2.split()[0]} now has the floor."
     after2_text = f"Thank you {speaker2.split()[0]}. The judges will now review both speeches and present their verdict."
 
     voice_name = get_random_caster_voice()
@@ -87,3 +88,27 @@ def generate_judgement_audio(debate_id, score1, score2, speaker1, speaker2, judg
         voice=voice_name
     )
     save(audio, f'static/speeches/{debate_id}_judgement.wav')
+
+
+def generate_united_audio(debate_id):
+    infiles = [
+        f'static/speeches/{debate_id}_intro.wav'
+        f'static/speeches/{debate_id}_speech1.wav'
+        f'static/speeches/{debate_id}_after1.wav'
+        f'static/speeches/{debate_id}_speech2.wav'
+        f'static/speeches/{debate_id}_after2.wav'
+        f'static/speeches/{debate_id}_judgement.wav'
+    ]
+    outfile = f'static/speeches/{debate_id}_combined.wav'
+
+    data= []
+    for infile in infiles:
+        w = wave.open(infile, 'rb')
+        data.append( [w.getparams(), w.readframes(w.getnframes())] )
+        w.close()
+
+    output = wave.open(outfile, 'wb')
+    output.setparams(data[0][0])
+    for i in range(len(data)):
+        output.writeframes(data[i][1])
+    output.close()

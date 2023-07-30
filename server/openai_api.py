@@ -36,8 +36,20 @@ Supporting speech: {supporting_speech}
 
 Rebuttal speech: {rebuttal_speech}
 
-Supporting speech score, rebuttal speech score, short reasoning for the scores up to 80 words (all comma-separated):
+Supporting speech score, rebuttal speech score (comma-separated):
 """
-    rv = query_with_prompts(system_prompt, user_prompt)
-    print("Judged speeches: " + rv)
-    return rv
+    scores = query_with_prompts(system_prompt, user_prompt)
+    print("Judges scores: " + scores)
+
+    user_prompt = f"""You are a judge in a debate competition. Given a topic, supporting and rebuttal speeches, grade each speech on a range from 1 to 10 and give a brief summary for why you chose that score.
+Topic: {topic}
+
+Supporting speech: {supporting_speech}
+
+Rebuttal speech: {rebuttal_speech}
+
+Give a short critique of both speeches (100 words or less):
+"""
+    speech = query_with_prompts(system_prompt, user_prompt)
+    print("Judged speech: " + speech)
+    return scores, speech
