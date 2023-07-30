@@ -3,14 +3,21 @@ from typing import Optional
 import whisper
 import random
 import wave
+import os
 
 from elevenlabs import generate, save, voices
 
 # We make the model global so that it's loaded at start and not every time
 model = whisper.load_model("base.en") # tiny.en / small.en
 
+def normalize_audio(filename: str) -> str:
+    os.system(f"ffmpeg -i {filename} -filter:a loudnorm normalized_{filename}")
+    os.system(f"mv normalized_{filename} {filename}")
+
+
 def transcribe(filename: str) -> Optional[str]:
     try:
+        normalize_audio(filename)
         result = model.transcribe(filename)
         rv = result["text"]
         print("Transcribed the following text: " + rv)
@@ -27,21 +34,22 @@ def get_voice_id_for_name(name: str) -> Optional[str]:
             return voice.voice_id
     return None
 
+def get_random_caster_voice() -> str:
+    return random.choice(["Adam", "Arnold", "Bella", "Wayne", "Marcus", "Caster", "Emily", "Josh", "Sam", "Serena"])
+
+
 def generate_audio(speaker: str, speech: str, debate_id: str, first_speech: bool) -> str:
     voice_id = get_voice_id_for_name(speaker)
     print(f"Generating audio for {speaker} with voice id {voice_id}")
     # TODO: FOR TESTING PURPOSES CROP
     audio = generate(
         text=speech[:100],
-        voice=voice_id or "Adam"
+        voice=voice_id or get_random_caster_voice()
     )
     suffix = "_speech1" if first_speech else "_speech2"
     save(audio, f'static/speeches/{debate_id}{suffix}.wav')
+    normalize_audio(f'static/speeches/{debate_id}{suffix}.wav')
     return f'static/speeches/{debate_id}{suffix}.wav'
-
-
-def get_random_caster_voice() -> str:
-    return random.choice(["Adam", "Arnold", "Bella", "Wayne", "Marcus", "Caster", "Emily", "Josh", "Sam", "Serena"])
 
 
 def generate_fixed_audios(debate_id, topic, speaker1, speaker2):
@@ -57,18 +65,21 @@ def generate_fixed_audios(debate_id, topic, speaker1, speaker2):
         voice=voice_name
     )
     save(intro_audio, f'static/speeches/{debate_id}_intro.wav')
+    normalize_audio(f'static/speeches/{debate_id}_intro.wav')
 
     after1_audio = generate(
         text=after1_text,
         voice=voice_name
     )
     save(after1_audio, f'static/speeches/{debate_id}_after1.wav')
+    normalize_audio(f'static/speeches/{debate_id}_after1.wav')
 
     after2_audio = generate(
         text=after2_text,
         voice=voice_name
     )
     save(after2_audio, f'static/speeches/{debate_id}_after2.wav')
+    normalize_audio(f'static/speeches/{debate_id}_after2.wav')
 
     return [intro_text, after1_text, after2_text]
 
@@ -88,27 +99,9 @@ def generate_judgement_audio(debate_id, score1, score2, speaker1, speaker2, judg
         voice=voice_name
     )
     save(audio, f'static/speeches/{debate_id}_judgement.wav')
+    normalize_audio(f'static/speeches/{debate_id}_judgement.wav')
 
 
 def generate_united_audio(debate_id):
-    infiles = [
-        f'static/speeches/{debate_id}_intro.wav',
-        f'static/speeches/{debate_id}_speech1.wav',
-        f'static/speeches/{debate_id}_after1.wav',
-        f'static/speeches/{debate_id}_speech2.wav',
-        f'static/speeches/{debate_id}_after2.wav',
-        f'static/speeches/{debate_id}_judgement.wav'
-    ]
-    outfile = f'static/speeches/{debate_id}_combined.wav'
-
-    data= []
-    for infile in infiles:
-        w = wave.open(infile, 'rb')
-        data.append( [w.getparams(), w.readframes(w.getnframes())] )
-        w.close()
-
-    output = wave.open(outfile, 'wb')
-    output.setparams(data[0][0])
-    for i in range(len(data)):
-        output.writeframes(data[i][1])
-    output.close()
+    os.system(f"""sox static/speeches/{debate_id}_intro.wav static/speeches/{debate_id}_speech1.wav static/speeches/{debate_id}_after1.wav static/speeches/{debate_id}_speech2.wav static/speeches/{debate_id}_after2.wav static/speeches/{debate_id}_judgement.wav static/speeches/{debate_id}_combined.wav""")
+    return f'static/speeches/{debate_id}_combined.wav'
