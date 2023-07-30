@@ -1,6 +1,7 @@
 import random
 import os
 import tempfile
+import json
 
 from flask import Flask, send_from_directory, request
 
@@ -11,16 +12,6 @@ from openai_api import write_speech, judge_speeches
 from db import get_all_debates, create_debate, update_debate, get_debate_by_id
 
 app = Flask(__name__)
-
-# Path for our main Svelte page
-@app.route("/")
-def base():
-    return send_from_directory('client/public', 'index.html')
-
-# Path for all the static files (compiled JS/CSS, etc.)
-@app.route("/<path:path>")
-def home(path):
-    return send_from_directory('client/public', path)
 
 
 @app.route("/initialize_debate", methods=['POST'])
@@ -46,9 +37,9 @@ def initialize_debate():
     create_debate(debate_id, topic, speaker1, speaker2)
 
     # Generate fixed phrases audio
-    generate_fixed_audios(debate_id, topic, speaker1, speaker2)
+    [intro_text, after1_text, after2_text] = generate_fixed_audios(debate_id, topic, speaker1, speaker2)
 
-    return "OK"
+    return json.dumps([intro_text, after1_text, after2_text])
 
 
 @app.route("/generate_speech", methods=['POST'])
@@ -94,7 +85,7 @@ def transcribe_speech():
     Inspired by https://stackoverflow.com/questions/60032983/record-voice-with-recorder-js-and-upload-it-to-python-flask-server-but-wav-file
     """
     audio_data = request.files['audio_data']
-    debate_id = request.form['debate_id']
+    debate_id = audio_data.filename
 
     debate_instances = get_debate_by_id(debate_id)
     if len(debate_instances) == 0:
