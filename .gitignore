@@ -1,6 +1,7 @@
 # Specific
 server/.env
 server/static/*
+server/plato.db
 .DS_Store
 
 # Byte-compiled / optimized / DLL files
