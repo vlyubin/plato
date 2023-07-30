@@ -76,7 +76,7 @@ def generate_speech():
     speech_file = generate_audio(speaker, speech_text, debate_id, first_speech = debate_instance["speech1"] is None)
     print("Generated sound speech: " + speech_file)
 
-    return "OK"
+    return [speech_text]
 
 @app.route("/transcribe_speech", methods=['POST'])
 def transcribe_speech():
@@ -132,6 +132,8 @@ def judge_speech(debate_id):
 
     judge_verdict = judge_speeches(debate_id, debate_instance["speech1"], debate_instance["speech2"])
     parts = judge_verdict.split(",")
+
+    # If we fail to parse, assign random scores (should not happen)
     try:
         score1 = int(parts[0].strip())
     except:
