@@ -28,9 +28,9 @@ def create_debate(
                 speaker2):
     conn = sqlite3.connect("plato.db")
     sql = f'''INSERT INTO debates(debate_id, topic, speaker1, speaker2)
-              VALUES('{debate_id}', '{topic}', '{speaker1}', '{speaker2}')'''
+              VALUES (?, ?, ?, ?)'''
     cur = conn.cursor()
-    cur.execute(sql)
+    cur.execute(sql, (debate_id, topic, speaker1, speaker2))
     conn.commit()
     conn.close()
 
@@ -45,28 +45,33 @@ def update_debate(
                 judgement=None,
                 score1=None,
                 score2=None):
-    # This is so prone to SQL injections, but I'm too lazy to fix it
     conn = sqlite3.connect("plato.db")
     set_staments = []
+    data = []
     if topic:
-        set_staments.append(f"topic = '{topic}'")
+        set_staments.append("topic = ?")
+        data.append(topic)
     if speaker1:
-        set_staments.append(f"speaker1 = '{speaker1}'")
+        set_staments.append("speaker1 = ?")
+        data.append(speaker1)
     if speaker2:
-        set_staments.append(f"speaker2 = '{speaker2}'")
+        set_staments.append("speaker2 = ?")
+        data.append(speaker2)
     if speech1:
-        speech1.replace('"', "'")
-        set_staments.append(f'speech1 = "{speech1}"')
+        set_staments.append("speech1 = ?")
+        data.append(speech1)
     if speech2:
-        speech2.replace('"', "'")
-        set_staments.append(f'speech2 = "{speech2}"')
+        set_staments.append("speech2 = ?")
+        data.append(speech2)
     if judgement:
-        judgement.replace('"', "'")
-        set_staments.append(f'judgement = "{judgement}"')
+        set_staments.append("judgement = ?")
+        data.append(judgement)
     if score1:
-        set_staments.append(f"score1 = '{score1}'")
+        set_staments.append("score1 = ?")
+        data.append(score1)
     if score2:
-        set_staments.append(f"score2 = '{score2}'")
+        set_staments.append("score2 = ?")
+        data.append(score2)
     set_stament = ", ".join(set_staments)
 
     sql = f'''UPDATE debates
@@ -74,7 +79,7 @@ def update_debate(
               WHERE debate_id = "{debate_id}"'''
     print(sql)
     cur = conn.cursor()
-    cur.execute(sql)
+    cur.execute(sql, tuple(data))
     conn.commit()
     conn.close()
 
@@ -105,10 +110,10 @@ def get_all_debates():
 def get_debate_by_id(debate_id):
     conn = sqlite3.connect("plato.db")
     sql = f"""
-    SELECT * FROM debates WHERE debate_id = "{debate_id}";
+    SELECT * FROM debates WHERE debate_id = ?;
     """
     c = conn.cursor()
-    rows = list(c.execute(sql))
+    rows = list(c.execute(sql, (debate_id,)))
     conn.close()
     return [
         {
