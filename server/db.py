@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import time
 
 def create_tables():
     conn = sqlite3.connect("plato.db")
@@ -13,7 +14,8 @@ def create_tables():
         speech2 TEXT,
         judgement TEXT,
         score1 INTEGER,
-        score2 INTEGER
+        score2 INTEGER,
+        timestamp INTEGER
     );
     """
     c = conn.cursor()
@@ -28,10 +30,11 @@ def create_debate(
                 speaker1,
                 speaker2):
     conn = sqlite3.connect("plato.db")
-    sql = f'''INSERT INTO debates(debate_id, topic, speaker1, speaker2)
-              VALUES (?, ?, ?, ?)'''
+    timestamp = int(time.time())
+    sql = f'''INSERT INTO debates(debate_id, topic, speaker1, speaker2, timestamp)
+              VALUES (?, ?, ?, ?, ?)'''
     cur = conn.cursor()
-    cur.execute(sql, (debate_id, topic, speaker1, speaker2))
+    cur.execute(sql, (debate_id, topic, speaker1, speaker2, timestamp))
     conn.commit()
     conn.close()
 
@@ -88,7 +91,7 @@ def update_debate(
 def get_all_debates():
     conn = sqlite3.connect("plato.db")
     sql = """
-    SELECT * FROM debates;
+    SELECT * FROM debates ORDER BY timestamp DESC;
     """
     c = conn.cursor()
     rows = list(c.execute(sql))
