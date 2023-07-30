@@ -39,7 +39,7 @@ def initialize_debate():
     # Generate fixed phrases audio
     [intro_text, after1_text, after2_text] = generate_fixed_audios(debate_id, topic, speaker1, speaker2)
 
-    return json.dumps([intro_text, after1_text, after2_text])
+    return [intro_text, after1_text, after2_text]
 
 
 @app.route("/generate_speech", methods=['POST'])
@@ -76,7 +76,10 @@ def generate_speech():
     speech_file = generate_audio(speaker, speech_text, debate_id, first_speech = debate_instance["speech1"] is None)
     print("Generated sound speech: " + speech_file)
 
-    return [speech_text]
+    return {
+        "speech": speech_text,
+        "audio": speech_file
+    }
 
 @app.route("/transcribe_speech", methods=['POST'])
 def transcribe_speech():
