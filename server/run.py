@@ -151,6 +151,7 @@ def judge_speech(debate_id):
     # TODO: FOR TESTING PURPOSES CROP THE AUDIO
     generate_judgement_audio(debate_id, score1, score2, debate_instance["speaker1"], debate_instance["speaker2"], judge_speech[:120])
 
+    # TODO - remove this
     generate_united_audio(debate_id)
 
     return {
@@ -158,6 +159,12 @@ def judge_speech(debate_id):
         "score2": score2,
         "judgement": judge_speech
     }
+
+@app.route("/save/<debate_id>", methods=['POST'])
+def save_speech(debate_id):
+    generate_united_audio(debate_id)
+    return "OK"
+
 
 @app.route("/get_speakers", methods=['GET'])
 def get_speakers():

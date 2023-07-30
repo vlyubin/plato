@@ -1,4 +1,5 @@
 import sqlite3
+import os
 
 def create_tables():
     conn = sqlite3.connect("plato.db")
@@ -92,7 +93,7 @@ def get_all_debates():
     c = conn.cursor()
     rows = list(c.execute(sql))
     conn.close()
-    return [
+    all_debates = [
         {
             "debate_id": row[0],
             "topic": row[1],
@@ -105,6 +106,8 @@ def get_all_debates():
             "score2": row[8],
         } for row in rows
     ]
+    all_debates = [d for d in all_debates if os.path.isfile(f'static/speeches/{d["debate_id"]}.wav')]
+    return all_debates
 
 
 def get_debate_by_id(debate_id):
