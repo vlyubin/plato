@@ -6,7 +6,7 @@ import json
 from flask import Flask, send_from_directory, request
 
 from constants import SPEAKERS
-from credentials import OPENAI_KEY, ELEVENLABS_KEY
+from credentials import OPENAI_KEY, ELEVENLABS_KEY, ACCESS_CODE
 from functions import transcribe, generate_audio, generate_fixed_audios, generate_judgement_audio, generate_united_audio
 from openai_api import write_speech, judge_speeches
 from db import get_all_debates, create_debate, update_debate, get_debate_by_id
@@ -34,6 +34,10 @@ def initialize_debate():
     speaker2 = data["speaker2"]
     debate_id = data["debate_id"]
 
+    access_code = request.cookies.get('access_code')
+    if access_code != ACCESS_CODE:
+        return "Invalid access code", 403
+
     create_debate(debate_id, topic, speaker1, speaker2)
 
     # Generate fixed phrases audio
@@ -50,6 +54,10 @@ def generate_speech():
     """
     # Get input data
     data = request.get_json()
+
+    access_code = request.cookies.get('access_code')
+    if access_code != ACCESS_CODE:
+        return "Invalid access code", 403
 
     topic = data["topic"]
     speaker = data["speaker"]
@@ -87,6 +95,10 @@ def transcribe_speech():
     This takes in audio file, then uses whisper to transcribe it, and returns the transcription.
     Inspired by https://stackoverflow.com/questions/60032983/record-voice-with-recorder-js-and-upload-it-to-python-flask-server-but-wav-file
     """
+    access_code = request.cookies.get('access_code')
+    if access_code != ACCESS_CODE:
+        return "Invalid access code", 403
+
     audio_data = request.files['audio_data']
     debate_id = audio_data.filename
 
@@ -116,6 +128,10 @@ def transcribe_speech():
 
 @app.route("/get_transcription/<debate_id>", methods=['GET'])
 def get_transcription(debate_id):
+    access_code = request.cookies.get('access_code')
+    if access_code != ACCESS_CODE:
+        return "Invalid access code", 403
+
     debate_instances = get_debate_by_id(debate_id)
     if len(debate_instances) == 0:
         raise Exception(f"Missing debate instance {debate_id}.")
@@ -128,6 +144,10 @@ def get_transcription(debate_id):
 
 @app.route("/judge_speech/<debate_id>", methods=['GET'])
 def judge_speech(debate_id):
+    access_code = request.cookies.get('access_code')
+    if access_code != ACCESS_CODE:
+        return "Invalid access code", 403
+
     debate_instances = get_debate_by_id(debate_id)
     if len(debate_instances) == 0:
         raise Exception(f"Missing debate instance {debate_id}.")
