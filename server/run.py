@@ -156,13 +156,17 @@ def judge_speech(debate_id):
     judge_scores, judge_speech = judge_speeches(debate_instance["topic"], debate_instance["speech1"], debate_instance["speech2"])
     parts = judge_scores.split(",")
 
+    if len(parts) < 2:
+        print("Have to retry")
+        judge_scores, judge_speech = judge_speeches(debate_instance["topic"], debate_instance["speech1"], debate_instance["speech2"])
+
     # If we fail to parse, assign random scores (should not happen)
     try:
-        score1 = int(parts[0].strip().split(".")[0].split(",")[0])
+        score1 = int(parts[0].strip().split()[0].split(".")[0].split(",")[0])
     except:
         score1 = random.randint(4, 9)
     try:
-        score2 = int(parts[1].strip().split(".")[0].split(",")[0])
+        score2 = int(parts[1].strip().split()[0].split(".")[0].split(",")[0])
     except:
         score2 = random.randint(4, 9)
 

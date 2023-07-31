@@ -36,7 +36,7 @@ def get_voice_id_for_name(name: str) -> Optional[str]:
     return None
 
 def get_random_caster_voice() -> str:
-    return random.choice(["Adam", "Arnold", "Bella", "Wayne", "Marcus", "Caster", "Emily", "Josh", "Sam", "Serena"])
+    return random.choice(["Adam", "Arnold", "Bella", "Wayne", "Marcus", "Caster", "Josh", "Sam", "Serena"])
 
 
 def generate_audio(speaker: str, speech: str, debate_id: str, first_speech: bool) -> str:
