@@ -162,7 +162,7 @@ def judge_speech(debate_id):
     except:
         score1 = random.randint(4, 9)
     try:
-        score1 = int(parts[1].strip().split(".")[0].split(",")[0])
+        score2 = int(parts[1].strip().split(".")[0].split(",")[0])
     except:
         score2 = random.randint(4, 9)
 
