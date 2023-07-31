@@ -90,7 +90,7 @@ def generate_judgement_audio(debate_id, score1, score2, speaker1, speaker2, judg
         result = f"{speaker1} wins the debate."
     elif score2 > score1:
         result = f"{speaker2} wins the debate."
-    text = f"Upon reviewing the speeches, we give the supporting speech a score of {score1} and the rebuttal speech a score of {score2}. {judgement}. {result}"
+    text = f"Upon reviewing the speeches, we give the supporting speech a score of {score1} and the rebuttal speech a score of {score2}. {judgement} {result}"
 
     voice_name = get_random_caster_voice()
 

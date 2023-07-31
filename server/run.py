@@ -158,11 +158,11 @@ def judge_speech(debate_id):
 
     # If we fail to parse, assign random scores (should not happen)
     try:
-        score1 = int(parts[0].strip())
+        score1 = int(parts[0].strip().split(".")[0].split(",")[0])
     except:
         score1 = random.randint(4, 9)
     try:
-        score2 = int(parts[1].strip())
+        score1 = int(parts[1].strip().split(".")[0].split(",")[0])
     except:
         score2 = random.randint(4, 9)
 
