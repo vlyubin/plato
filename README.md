@@ -1,4 +1,4 @@
-# plato
+# Debate.LOL
 Debate the best public speakers in the world on any topic you'd like!
 
 ## Prerequisites
@@ -23,11 +23,3 @@ Then you'll be able to run everything.
 ## Run software
 
 To run this project, you'll need to run `python3 run.py` in the `server` directory AND `npm run dev` in the `server/client` directory (at the same time).
-
-## Demo video
-
-TODO
-
-## Public hosted version
-
-TODO
