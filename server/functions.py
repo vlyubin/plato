@@ -42,9 +42,8 @@ def get_random_caster_voice() -> str:
 def generate_audio(speaker: str, speech: str, debate_id: str, first_speech: bool) -> str:
     voice_id = get_voice_id_for_name(speaker)
     print(f"Generating audio for {speaker} with voice id {voice_id}")
-    # TODO: FOR TESTING PURPOSES CROP
     audio = generate(
-        text=speech[:120],
+        text=speech,
         voice=voice_id or get_random_caster_voice()
     )
     suffix = "_speech1" if first_speech else "_speech2"
@@ -89,7 +88,7 @@ def generate_judgement_audio(debate_id, score1, score2, speaker1, speaker2, judg
     result = "It's a draw, both speakers were equally good."
     if score1 > score2:
         result = f"{speaker1} wins the debate."
-    else:
+    elif score2 > score1:
         result = f"{speaker2} wins the debate."
     text = f"Upon reviewing the speeches, we give the supporting speech a score of {score1} and the rebuttal speech a score of {score2}. {judgement}. {result}"
 
