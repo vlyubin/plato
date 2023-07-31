@@ -2,7 +2,7 @@ import openai
 
 
 def query_openai(messages):
-	chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages)
+	chat_completion = openai.ChatCompletion.create(model="gpt-4", messages=messages) # "gpt-3.5-turbo"
 	return chat_completion.choices[0].message.content
 
 
@@ -48,7 +48,7 @@ Supporting speech: {supporting_speech}
 
 Rebuttal speech: {rebuttal_speech}
 
-Give a short critique of both speeches (100 words or less):"""
+Critique of the debate (80 words or less):"""
     speech = query_with_prompts(system_prompt, user_prompt)
     print("Judged speech: " + speech)
     return scores, speech
